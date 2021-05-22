@@ -2,13 +2,30 @@ import Image from 'next/image';
 import { useState } from 'react';
 import {StarIcon} from '@heroicons/react/solid';
 import Currency from 'react-currency-formatter';
+import { useDispatch } from 'react-redux';
+import { addToBasket } from '../src/slices/basketSlice';
 const MAX_RATING = 5;
 const MIN_RATING = 1;
 function Product({id, price, title, description, category, image}) {
+     const dispatch = useDispatch();
     const [rating] =useState(
         Math.floor(Math.random() * (MAX_RATING-MIN_RATING + 1))+ MIN_RATING
     );
     const [hasPrime] = useState(Math.random()<0.5);
+    const addItemToBasket = () =>{
+      const products = {
+          id,
+          price,
+          title,
+          description,
+          category,
+          image,
+          rating,
+          hasPrime,
+      };
+
+      dispatch(addToBasket(products));
+    }
     return (
         <div className="relative flex flex-col bg-white m-5 z-30 p-10 transform hover:scale-105 transition duration-300 ease-in-out">
             <p className="absolute top-2 right-2 italic text-gray-400 text-sm">{category}</p>
@@ -16,7 +33,7 @@ function Product({id, price, title, description, category, image}) {
             <h4 className="my-3">{title}</h4>
             <div className="flex items-center ">
                 {Array(rating).fill().map((_,i) =>(
-              <StarIcon className="h-5 text-yellow-500" />  
+              <StarIcon key={i} className="h-5 text-yellow-500" />  
             ))}
             </div>
             <p className="my-2 text-xs line-clamp-2">{description}</p>
@@ -33,7 +50,7 @@ function Product({id, price, title, description, category, image}) {
                     <p className="text-xs text-gray-500">Free Next-day Delivery</p>
                 </div>
             )}
-            <button className="mt-auto btn">Add to Basket</button>
+            <button onClick={addItemToBasket} className="mt-auto btn">Add to Basket</button>
 
             
             
