@@ -1,6 +1,6 @@
 import { buffer } from "micro";
 import * as admin from "firebase-admin";
-var serviceAccount = require("../../../permission.json");
+const serviceAccount = require("../../../permissions.json");
 const app = !admin.apps.length
   ? admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
@@ -11,6 +11,7 @@ const endPointSecret = process.env.STRIPE_SIGNING_SECRET;
 
 
 const fullfillOrder = async (session) => {
+  console.log(session)
  
   return app
     .firestore()
@@ -29,7 +30,8 @@ const fullfillOrder = async (session) => {
     });
 };
 
-export default async (req, res) => {
+async function handler (req, res) {
+  console.log("U hit the webhook page");
   if (req.method === "POST") {
     const requestBuffer = await buffer(req);
     const payload = requestBuffer.toString();
@@ -61,8 +63,10 @@ export default async (req, res) => {
 };
 
 export const config = {
-  api: {
+  api: { 
     bodyParser: false,
     externalResolver: true,
   },
 };
+
+export default handler;
